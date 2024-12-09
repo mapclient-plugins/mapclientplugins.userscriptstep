@@ -16,25 +16,58 @@ class UserScriptStep(WorkflowStepMountPoint):
 
     def __init__(self, location):
         super(UserScriptStep, self).__init__('User Script', location)
-        self._configured = False  # A step cannot be executed until it has been configured.
+        self._configured = False
         self._category = 'General'
-        # Add any other initialisation code here:
+
         # Ports:
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
-                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
-                      '<not-set>'))
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
-                      'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
-                      '<not-set>'))
+        self._skeleton_input_triple_individual = \
+            ['http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+             'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+             '<not-set>']
+        self._skeleton_input_triple_list = \
+            ['http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+             'http://physiomeproject.org/workflow/1.0/rdf-schema#uses-list-of',
+             '<not-set>']
+        self._skeleton_output_triple_individual = \
+            ['http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+             'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
+             '<not-set>']
+        self._skeleton_output_triple_list = \
+            ['http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+             'http://physiomeproject.org/workflow/1.0/rdf-schema#provides-list-of',
+             '<not-set>']
+        self.addPort([tuple(self._skeleton_input_triple_individual),
+                      tuple(self._skeleton_input_triple_list)])
+        self.addPort([tuple(self._skeleton_output_triple_individual),
+                      tuple(self._skeleton_output_triple_list)])
+
         # Port data:
-        self._portData0 = None  # <not-set>
-        self._portData1 = None  # <not-set>
+        self._input_data = [None]
+        self._output_data = [None]
+
         # Config:
         self._config = {
             'identifier': '',
             'input_port_count': 1,
             'output_port_count': 1,
         }
+
+    def _process_config(self):
+        self._ports.clear()
+
+        input_port_count = self._config['input_port_count']
+        self._input_data = [None] * input_port_count
+        input_port_triple_individual = self._skeleton_input_triple_individual
+        input_port_triple_list = self._skeleton_input_triple_list
+        for i in range(input_port_count):
+            self.addPort([tuple(input_port_triple_individual), tuple(input_port_triple_list)])
+
+        output_port_count = self._config['output_port_count']
+        self._output_data = [None] * output_port_count
+        output_port_triple_individual = self._skeleton_output_triple_individual
+        output_port_triple_list = self._skeleton_output_triple_list
+        for i in range(output_port_count):
+            self.addPort([tuple(output_port_triple_individual), tuple(output_port_triple_list)])
 
     def execute(self):
         """
@@ -54,7 +87,7 @@ class UserScriptStep(WorkflowStepMountPoint):
         :param index: Index of the port to return.
         :param data_in: The data to set for the port at the given index.
         """
-        self._portData0 = data_in  # <not-set>
+        self._input_data[index] = data_in
 
     def getPortData(self, index):
         """
@@ -64,7 +97,8 @@ class UserScriptStep(WorkflowStepMountPoint):
 
         :param index: Index of the port to return.
         """
-        return self._portData1  # <not-set>
+        output_index = index - self._config['input_port_count']
+        return self._output_data[output_index]
 
     def configure(self):
         """
@@ -82,6 +116,7 @@ class UserScriptStep(WorkflowStepMountPoint):
 
         if dlg.exec_():
             self._config = dlg.get_config()
+            self._process_config()
 
         self._configured = dlg.validate()
         self._configuredObserver()
@@ -118,3 +153,4 @@ class UserScriptStep(WorkflowStepMountPoint):
         d.identifierOccursCount = self._identifierOccursCount
         d.set_config(self._config)
         self._configured = d.validate()
+        self._process_config()
