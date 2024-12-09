@@ -1,4 +1,5 @@
 
+import os
 
 from PySide6 import QtWidgets
 from mapclientplugins.userscriptstep.ui_configuredialog import Ui_ConfigureDialog
@@ -27,10 +28,15 @@ class ConfigureDialog(QtWidgets.QDialog):
         # We will use this method to decide whether the identifier is unique.
         self.identifierOccursCount = None
 
+        self._workflow_location = None
+        self._previous_location = ''
+
         self._make_connections()
 
     def _make_connections(self):
         self._ui.lineEditIdentifier.textChanged.connect(self.validate)
+        self._ui.lineEditFileLocation.textChanged.connect(self.validate)
+        self._ui.pushButtonFileChooser.clicked.connect(self._open_file_chooser)
 
     def accept(self):
         """
@@ -58,12 +64,15 @@ class ConfigureDialog(QtWidgets.QDialog):
         # The identifierOccursCount method is part of the interface to the workflow framework.
         value = self.identifierOccursCount(self._ui.lineEditIdentifier.text())
         valid = (value == 0) or (value == 1 and self._previousIdentifier == self._ui.lineEditIdentifier.text())
-        if valid:
-            self._ui.lineEditIdentifier.setStyleSheet(DEFAULT_STYLE_SHEET)
-        else:
-            self._ui.lineEditIdentifier.setStyleSheet(INVALID_STYLE_SHEET)
+        self._ui.lineEditIdentifier.setStyleSheet(
+            DEFAULT_STYLE_SHEET if valid else INVALID_STYLE_SHEET)
 
-        return valid
+        path = self._ui.lineEditFileLocation.text()
+        path_valid = len(path) and os.path.isfile(path) and path.endswith(".py")
+        self._ui.lineEditFileLocation.setStyleSheet(
+            DEFAULT_STYLE_SHEET if path_valid else INVALID_STYLE_SHEET)
+
+        return valid and path_valid
 
     def get_config(self):
         """
@@ -74,6 +83,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._previousIdentifier = self._ui.lineEditIdentifier.text()
         config = {
             'identifier': self._ui.lineEditIdentifier.text(),
+            'script_path': self._ui.lineEditFileLocation.text(),
             'input_port_count': self._ui.spinBoxNumberOfInputs.value(),
             'output_port_count': self._ui.spinBoxNumberOfOutputs.value()
         }
@@ -87,5 +97,14 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         self._previousIdentifier = config['identifier']
         self._ui.lineEditIdentifier.setText(config['identifier'])
+        self._ui.lineEditFileLocation.setText(config['script_path'])
         self._ui.spinBoxNumberOfInputs.setValue(config['input_port_count'])
         self._ui.spinBoxNumberOfOutputs.setValue(config['output_port_count'])
+
+    def _open_file_chooser(self):
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, 'Select File Location', self._previous_location)
+
+        if path:
+            self._previous_location = path
+            self._ui.lineEditFileLocation.setText(path)

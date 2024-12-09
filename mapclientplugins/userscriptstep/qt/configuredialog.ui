@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>303</height>
+    <width>600</width>
+    <height>220</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,14 +30,14 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="lineEditIdentifier"/>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label1">
         <property name="text">
          <string>Number of inputs:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QSpinBox" name="spinBoxNumberOfInputs">
         <property name="minimumSize">
          <size>
@@ -50,14 +50,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label2">
         <property name="text">
          <string>Number of outputs:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QSpinBox" name="spinBoxNumberOfOutputs">
         <property name="minimumSize">
          <size>
@@ -69,6 +69,27 @@
          <number>1</number>
         </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Script Path:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="lineEditFileLocation"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonFileChooser">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

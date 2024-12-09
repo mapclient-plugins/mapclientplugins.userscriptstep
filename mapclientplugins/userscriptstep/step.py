@@ -48,6 +48,7 @@ class UserScriptStep(WorkflowStepMountPoint):
         # Config:
         self._config = {
             'identifier': '',
+            'script_path': '',
             'input_port_count': 1,
             'output_port_count': 1,
         }
