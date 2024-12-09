@@ -3,6 +3,7 @@
 from PySide6 import QtWidgets
 from mapclientplugins.userscriptstep.ui_configuredialog import Ui_ConfigureDialog
 
+
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
 DEFAULT_STYLE_SHEET = ''
 
@@ -26,9 +27,9 @@ class ConfigureDialog(QtWidgets.QDialog):
         # We will use this method to decide whether the identifier is unique.
         self.identifierOccursCount = None
 
-        self._makeConnections()
+        self._make_connections()
 
-    def _makeConnections(self):
+    def _make_connections(self):
         self._ui.lineEdit0.textChanged.connect(self.validate)
 
     def accept(self):
@@ -38,10 +39,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         result = QtWidgets.QMessageBox.StandardButton.Yes
         if not self.validate():
-            result = QtWidgets.QMessageBox.warning(
-                self, 'Invalid Configuration',
-                'This configuration is invalid.  Unpredictable behaviour may result if you choose \'Yes\', are you sure you want to save this configuration?)',
-                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No, QtWidgets.QMessageBox.StandardButton.No)
+            result = QtWidgets.QMessageBox.warning(self, 'Invalid Configuration', 'This configuration is invalid.  Unpredictable behaviour '
+                                                   'may result if you choose \'Yes\', are you sure you want to save this configuration?)',
+                                                   QtWidgets.QMessageBox.StandardButton(QtWidgets.QMessageBox.StandardButton.Yes |
+                                                                                        QtWidgets.QMessageBox.StandardButton.No),
+                                                   QtWidgets.QMessageBox.StandardButton.No)
 
         if result == QtWidgets.QMessageBox.StandardButton.Yes:
             QtWidgets.QDialog.accept(self)
@@ -63,20 +65,21 @@ class ConfigureDialog(QtWidgets.QDialog):
 
         return valid
 
-    def getConfig(self):
+    def get_config(self):
         """
         Get the current value of the configuration from the dialog.  Also
         set the _previousIdentifier value so that we can check uniqueness of the
         identifier over the whole of the workflow.
         """
         self._previousIdentifier = self._ui.lineEdit0.text()
-        config = {}
-        config['identifier'] = self._ui.lineEdit0.text()
-        config['Number of inputs:'] = self._ui.lineEdit1.text()
-        config['Number of outputs:'] = self._ui.lineEdit2.text()
+        config = {
+            'identifier': self._ui.lineEdit0.text(),
+            'input_port_count': self._ui.lineEdit1.text(),
+            'output_port_count': self._ui.lineEdit2.text()
+        }
         return config
 
-    def setConfig(self, config):
+    def set_config(self, config):
         """
         Set the current value of the configuration for the dialog.  Also
         set the _previousIdentifier value so that we can check uniqueness of the
@@ -84,6 +87,5 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         self._previousIdentifier = config['identifier']
         self._ui.lineEdit0.setText(config['identifier'])
-        self._ui.lineEdit1.setText(config['Number of inputs:'])
-        self._ui.lineEdit2.setText(config['Number of outputs:'])
-
+        self._ui.lineEdit1.setText(config['input_port_count'])
+        self._ui.lineEdit2.setText(config['output_port_count'])

@@ -32,8 +32,8 @@ class UserScriptStep(WorkflowStepMountPoint):
         # Config:
         self._config = {
             'identifier': '',
-            'Number of inputs:': '',
-            'Number of outputs:': '',
+            'input_port_count': '',
+            'output_port_count': '',
         }
 
     def execute(self):
@@ -45,16 +45,16 @@ class UserScriptStep(WorkflowStepMountPoint):
         # Put your execute step code here before calling the '_doneExecution' method.
         self._doneExecution()
 
-    def setPortData(self, index, dataIn):
+    def setPortData(self, index, data_in):
         """
         Add your code here that will set the appropriate objects for this step.
         The index is the index of the port in the port list.  If there is only one
         uses port for this step then the index can be ignored.
 
         :param index: Index of the port to return.
-        :param dataIn: The data to set for the port at the given index.
+        :param data_in: The data to set for the port at the given index.
         """
-        self._portData0 = dataIn  # <not-set>
+        self._portData0 = data_in  # <not-set>
 
     def getPortData(self, index):
         """
@@ -76,12 +76,12 @@ class UserScriptStep(WorkflowStepMountPoint):
         """
         dlg = ConfigureDialog(self._main_window)
         dlg.identifierOccursCount = self._identifierOccursCount
-        dlg.setConfig(self._config)
+        dlg.set_config(self._config)
         dlg.validate()
         dlg.setModal(True)
 
         if dlg.exec_():
-            self._config = dlg.getConfig()
+            self._config = dlg.get_config()
 
         self._configured = dlg.validate()
         self._configuredObserver()
@@ -116,7 +116,5 @@ class UserScriptStep(WorkflowStepMountPoint):
 
         d = ConfigureDialog()
         d.identifierOccursCount = self._identifierOccursCount
-        d.setConfig(self._config)
+        d.set_config(self._config)
         self._configured = d.validate()
-
-
