@@ -32,8 +32,8 @@ class UserScriptStep(WorkflowStepMountPoint):
         # Config:
         self._config = {
             'identifier': '',
-            'input_port_count': '',
-            'output_port_count': '',
+            'input_port_count': 1,
+            'output_port_count': 1,
         }
 
     def execute(self):

@@ -30,7 +30,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._make_connections()
 
     def _make_connections(self):
-        self._ui.lineEdit0.textChanged.connect(self.validate)
+        self._ui.lineEditIdentifier.textChanged.connect(self.validate)
 
     def accept(self):
         """
@@ -56,12 +56,12 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         # Determine if the current identifier is unique throughout the workflow
         # The identifierOccursCount method is part of the interface to the workflow framework.
-        value = self.identifierOccursCount(self._ui.lineEdit0.text())
-        valid = (value == 0) or (value == 1 and self._previousIdentifier == self._ui.lineEdit0.text())
+        value = self.identifierOccursCount(self._ui.lineEditIdentifier.text())
+        valid = (value == 0) or (value == 1 and self._previousIdentifier == self._ui.lineEditIdentifier.text())
         if valid:
-            self._ui.lineEdit0.setStyleSheet(DEFAULT_STYLE_SHEET)
+            self._ui.lineEditIdentifier.setStyleSheet(DEFAULT_STYLE_SHEET)
         else:
-            self._ui.lineEdit0.setStyleSheet(INVALID_STYLE_SHEET)
+            self._ui.lineEditIdentifier.setStyleSheet(INVALID_STYLE_SHEET)
 
         return valid
 
@@ -71,11 +71,11 @@ class ConfigureDialog(QtWidgets.QDialog):
         set the _previousIdentifier value so that we can check uniqueness of the
         identifier over the whole of the workflow.
         """
-        self._previousIdentifier = self._ui.lineEdit0.text()
+        self._previousIdentifier = self._ui.lineEditIdentifier.text()
         config = {
-            'identifier': self._ui.lineEdit0.text(),
-            'input_port_count': self._ui.lineEdit1.text(),
-            'output_port_count': self._ui.lineEdit2.text()
+            'identifier': self._ui.lineEditIdentifier.text(),
+            'input_port_count': self._ui.spinBoxNumberOfInputs.value(),
+            'output_port_count': self._ui.spinBoxNumberOfOutputs.value()
         }
         return config
 
@@ -86,6 +86,6 @@ class ConfigureDialog(QtWidgets.QDialog):
         identifier over the whole of the workflow.
         """
         self._previousIdentifier = config['identifier']
-        self._ui.lineEdit0.setText(config['identifier'])
-        self._ui.lineEdit1.setText(config['input_port_count'])
-        self._ui.lineEdit2.setText(config['output_port_count'])
+        self._ui.lineEditIdentifier.setText(config['identifier'])
+        self._ui.spinBoxNumberOfInputs.setValue(config['input_port_count'])
+        self._ui.spinBoxNumberOfOutputs.setValue(config['output_port_count'])

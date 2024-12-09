@@ -17,7 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
     QFormLayout, QGridLayout, QGroupBox, QLabel,
-    QLineEdit, QSizePolicy, QWidget)
+    QLineEdit, QSizePolicy, QSpinBox, QWidget)
 
 class Ui_ConfigureDialog(object):
     def setupUi(self, ConfigureDialog):
@@ -35,30 +35,34 @@ class Ui_ConfigureDialog(object):
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label0)
 
-        self.lineEdit0 = QLineEdit(self.configGroupBox)
-        self.lineEdit0.setObjectName(u"lineEdit0")
+        self.lineEditIdentifier = QLineEdit(self.configGroupBox)
+        self.lineEditIdentifier.setObjectName(u"lineEditIdentifier")
 
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lineEdit0)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lineEditIdentifier)
 
         self.label1 = QLabel(self.configGroupBox)
         self.label1.setObjectName(u"label1")
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.label1)
 
-        self.lineEdit1 = QLineEdit(self.configGroupBox)
-        self.lineEdit1.setObjectName(u"lineEdit1")
+        self.spinBoxNumberOfInputs = QSpinBox(self.configGroupBox)
+        self.spinBoxNumberOfInputs.setObjectName(u"spinBoxNumberOfInputs")
+        self.spinBoxNumberOfInputs.setMinimumSize(QSize(75, 0))
+        self.spinBoxNumberOfInputs.setMinimum(1)
 
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.lineEdit1)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.spinBoxNumberOfInputs)
 
         self.label2 = QLabel(self.configGroupBox)
         self.label2.setObjectName(u"label2")
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label2)
 
-        self.lineEdit2 = QLineEdit(self.configGroupBox)
-        self.lineEdit2.setObjectName(u"lineEdit2")
+        self.spinBoxNumberOfOutputs = QSpinBox(self.configGroupBox)
+        self.spinBoxNumberOfOutputs.setObjectName(u"spinBoxNumberOfOutputs")
+        self.spinBoxNumberOfOutputs.setMinimumSize(QSize(75, 0))
+        self.spinBoxNumberOfOutputs.setMinimum(1)
 
-        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.lineEdit2)
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.spinBoxNumberOfOutputs)
 
 
         self.gridLayout.addWidget(self.configGroupBox, 0, 0, 1, 1)
@@ -81,8 +85,8 @@ class Ui_ConfigureDialog(object):
     def retranslateUi(self, ConfigureDialog):
         ConfigureDialog.setWindowTitle(QCoreApplication.translate("ConfigureDialog", u"Configure User Script", None))
         self.configGroupBox.setTitle("")
-        self.label0.setText(QCoreApplication.translate("ConfigureDialog", u"identifier:  ", None))
-        self.label1.setText(QCoreApplication.translate("ConfigureDialog", u"Number of inputs::  ", None))
-        self.label2.setText(QCoreApplication.translate("ConfigureDialog", u"Number of outputs::  ", None))
+        self.label0.setText(QCoreApplication.translate("ConfigureDialog", u"Identifier:", None))
+        self.label1.setText(QCoreApplication.translate("ConfigureDialog", u"Number of inputs:", None))
+        self.label2.setText(QCoreApplication.translate("ConfigureDialog", u"Number of outputs:", None))
     # retranslateUi
 
