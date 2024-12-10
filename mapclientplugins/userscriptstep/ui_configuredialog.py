@@ -72,10 +72,10 @@ class Ui_ConfigureDialog(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.lineEditFileLocation = QLineEdit(self.configGroupBox)
-        self.lineEditFileLocation.setObjectName(u"lineEditFileLocation")
+        self.lineEditScriptPath = QLineEdit(self.configGroupBox)
+        self.lineEditScriptPath.setObjectName(u"lineEditScriptPath")
 
-        self.horizontalLayout.addWidget(self.lineEditFileLocation)
+        self.horizontalLayout.addWidget(self.lineEditScriptPath)
 
         self.pushButtonFileChooser = QPushButton(self.configGroupBox)
         self.pushButtonFileChooser.setObjectName(u"pushButtonFileChooser")

@@ -35,7 +35,7 @@ class ConfigureDialog(QtWidgets.QDialog):
 
     def _make_connections(self):
         self._ui.lineEditIdentifier.textChanged.connect(self.validate)
-        self._ui.lineEditFileLocation.textChanged.connect(self.validate)
+        self._ui.lineEditScriptPath.textChanged.connect(self.validate)
         self._ui.pushButtonFileChooser.clicked.connect(self._open_file_chooser)
 
     def accept(self):
@@ -67,9 +67,9 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._ui.lineEditIdentifier.setStyleSheet(
             DEFAULT_STYLE_SHEET if valid else INVALID_STYLE_SHEET)
 
-        path = self._ui.lineEditFileLocation.text()
+        path = self._ui.lineEditScriptPath.text()
         path_valid = len(path) and os.path.isfile(path) and path.endswith(".py")
-        self._ui.lineEditFileLocation.setStyleSheet(
+        self._ui.lineEditScriptPath.setStyleSheet(
             DEFAULT_STYLE_SHEET if path_valid else INVALID_STYLE_SHEET)
 
         return valid and path_valid
@@ -83,7 +83,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._previousIdentifier = self._ui.lineEditIdentifier.text()
         config = {
             'identifier': self._ui.lineEditIdentifier.text(),
-            'script_path': self._ui.lineEditFileLocation.text(),
+            'script_path': self._ui.lineEditScriptPath.text(),
             'input_port_count': self._ui.spinBoxNumberOfInputs.value(),
             'output_port_count': self._ui.spinBoxNumberOfOutputs.value()
         }
@@ -97,7 +97,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         """
         self._previousIdentifier = config['identifier']
         self._ui.lineEditIdentifier.setText(config['identifier'])
-        self._ui.lineEditFileLocation.setText(config['script_path'])
+        self._ui.lineEditScriptPath.setText(config['script_path'])
         self._ui.spinBoxNumberOfInputs.setValue(config['input_port_count'])
         self._ui.spinBoxNumberOfOutputs.setValue(config['output_port_count'])
 
@@ -107,4 +107,4 @@ class ConfigureDialog(QtWidgets.QDialog):
 
         if path:
             self._previous_location = path
-            self._ui.lineEditFileLocation.setText(path)
+            self._ui.lineEditScriptPath.setText(path)
