@@ -5,7 +5,7 @@ MAP Client Plugin Step
 import json
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
-from mapclientplugins.userscriptstep.configuredialog import ConfigureDialog
+from mapclientplugins.userscriptstep.configuredialog import ConfigureDialog, import_plugin_main
 
 
 class UserScriptStep(WorkflowStepMountPoint):
@@ -72,11 +72,12 @@ class UserScriptStep(WorkflowStepMountPoint):
 
     def execute(self):
         """
-        Add your code here that will kick off the execution of the step.
-        Make sure you call the _doneExecution() method when finished.  This method
-        may be connected up to a button in a widget for example.
+        The plugin will call the `plugin_main` function defined in the user script and pass in the
+        input port data as arguments. The user script must define the `plugin_main` function.
         """
-        # Put your execute step code here before calling the '_doneExecution' method.
+        plugin_main = import_plugin_main(self._config['script_path'])
+        self._output_data = list(plugin_main(*self._input_data))
+
         self._doneExecution()
 
     def setPortData(self, index, data_in):

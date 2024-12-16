@@ -1,5 +1,6 @@
 
 import os
+import importlib.util
 
 from PySide6 import QtWidgets
 from mapclientplugins.userscriptstep.ui_configuredialog import Ui_ConfigureDialog
@@ -7,6 +8,15 @@ from mapclientplugins.userscriptstep.ui_configuredialog import Ui_ConfigureDialo
 
 INVALID_STYLE_SHEET = 'background-color: rgba(239, 0, 0, 50)'
 DEFAULT_STYLE_SHEET = ''
+
+
+def import_plugin_main(file_path):
+    spec = importlib.util.spec_from_file_location('user_script', file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    if hasattr(module, 'plugin_main'):
+        return getattr(module, 'plugin_main')
+    raise AttributeError(f"Function `plugin_main` not defined in script {file_path}")
 
 
 class ConfigureDialog(QtWidgets.QDialog):
@@ -34,8 +44,9 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._make_connections()
 
     def _make_connections(self):
-        self._ui.lineEditIdentifier.textChanged.connect(self.validate)
-        self._ui.lineEditScriptPath.textChanged.connect(self.validate)
+        self._ui.lineEditIdentifier.textChanged.connect(self._validate_identifier)
+        self._ui.lineEditScriptPath.textChanged.connect(self._validate_script_path)
+        self._ui.lineEditScriptPath.editingFinished.connect(self._check_script_entry)
         self._ui.pushButtonFileChooser.clicked.connect(self._open_file_chooser)
 
     def accept(self):
@@ -60,6 +71,13 @@ class ConfigureDialog(QtWidgets.QDialog):
         set the style sheet to the INVALID_STYLE_SHEET.  Return the outcome of the
         overall validity of the configuration.
         """
+        valid = self._validate_identifier()
+        path_valid = self._validate_script_path()
+        script_valid = self._validate_script_entry()
+
+        return valid and path_valid and script_valid
+
+    def _validate_identifier(self):
         # Determine if the current identifier is unique throughout the workflow
         # The identifierOccursCount method is part of the interface to the workflow framework.
         value = self.identifierOccursCount(self._ui.lineEditIdentifier.text())
@@ -67,12 +85,30 @@ class ConfigureDialog(QtWidgets.QDialog):
         self._ui.lineEditIdentifier.setStyleSheet(
             DEFAULT_STYLE_SHEET if valid else INVALID_STYLE_SHEET)
 
+        return valid
+
+    def _validate_script_path(self):
         path = self._ui.lineEditScriptPath.text()
         path_valid = len(path) and os.path.isfile(path) and path.endswith(".py")
         self._ui.lineEditScriptPath.setStyleSheet(
             DEFAULT_STYLE_SHEET if path_valid else INVALID_STYLE_SHEET)
 
-        return valid and path_valid
+        return path_valid
+
+    def _validate_script_entry(self):
+        try:
+            script_path = self._ui.lineEditScriptPath.text()
+            import_plugin_main(script_path)
+            return True
+        except AttributeError:
+            return False
+
+    def _check_script_entry(self):
+        try:
+            script_path = self._ui.lineEditScriptPath.text()
+            import_plugin_main(script_path)
+        except AttributeError as e:
+            QtWidgets.QMessageBox.warning(self, 'Invalid Script', str(e))
 
     def get_config(self):
         """
@@ -108,3 +144,4 @@ class ConfigureDialog(QtWidgets.QDialog):
         if path:
             self._previous_location = path
             self._ui.lineEditScriptPath.setText(path)
+            self._check_script_entry()
