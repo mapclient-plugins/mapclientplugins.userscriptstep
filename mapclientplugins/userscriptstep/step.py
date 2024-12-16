@@ -2,6 +2,7 @@
 """
 MAP Client Plugin Step
 """
+
 import json
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
@@ -9,10 +10,6 @@ from mapclientplugins.userscriptstep.configuredialog import ConfigureDialog, imp
 
 
 class UserScriptStep(WorkflowStepMountPoint):
-    """
-    Skeleton step which is intended to be a helpful starting point
-    for new steps.
-    """
 
     def __init__(self, location):
         super(UserScriptStep, self).__init__('User Script', location)
@@ -82,9 +79,7 @@ class UserScriptStep(WorkflowStepMountPoint):
 
     def setPortData(self, index, data_in):
         """
-        Add your code here that will set the appropriate objects for this step.
-        The index is the index of the port in the port list.  If there is only one
-        uses port for this step then the index can be ignored.
+        Set the data given by the input (uses) ports.
 
         :param index: Index of the port to return.
         :param data_in: The data to set for the port at the given index.
@@ -93,9 +88,7 @@ class UserScriptStep(WorkflowStepMountPoint):
 
     def getPortData(self, index):
         """
-        Add your code here that will return the appropriate objects for this step.
-        The index is the index of the port in the port list.  If there is only one
-        provides port for this step then the index can be ignored.
+        Return the data for the output (provides) ports.
 
         :param index: Index of the port to return.
         """
@@ -137,15 +130,13 @@ class UserScriptStep(WorkflowStepMountPoint):
 
     def serialize(self):
         """
-        Add code to serialize this step to string.  This method should
-        implement the opposite of 'deserialize'.
+        Serialize this step to a string.
         """
         return json.dumps(self._config, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def deserialize(self, string):
         """
-        Add code to deserialize this step from string.  This method should
-        implement the opposite of 'serialize'.
+        Deserialize this step from a string.
 
         :param string: JSON representation of the configuration in a string.
         """
